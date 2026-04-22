@@ -20,12 +20,12 @@ const params = {
   baseModel: "character", 
 };
 
-// Lista de animaciones "Without Skin"
+// Lista de animaciones "Without Skin" (¡Corregido "Mutant Punch" con 'P' mayúscula!)
 const animations = [
   { key: '1', file: "Mma Kick" },
   { key: '2', file: "Boxing" },
   { key: '3', file: "Flair" },
-  { key: '4', file: "Mutant punch" },
+  { key: '4', file: "Mutant Punch" }, 
   { key: '5', file: "Running" }
 ];
 
@@ -103,7 +103,7 @@ function init() {
 function loadBaseModelAndAnimations() {
   // Cargamos el modelo base con contador de porcentaje
   loader.load(
-    "../models/fbx/" + params.baseModel + ".fbx", 
+    "./assets/models/fbx/" + params.baseModel + ".fbx", 
     function (group) {
       object = group;
       
@@ -120,7 +120,7 @@ function loadBaseModelAndAnimations() {
       let loadedAnimations = 0;
       
       animations.forEach((anim) => {
-        loader.load("../models/fbx/" + anim.file + ".fbx", function (animGroup) {
+        loader.load("./assets/models/fbx/" + anim.file + ".fbx", function (animGroup) {
           const clip = animGroup.animations[0];
           const action = mixer.clipAction(clip);
           
