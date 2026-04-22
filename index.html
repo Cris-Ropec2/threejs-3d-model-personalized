@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Animaciones de Mixamo - Cristopher Rodríguez</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="./assets/img/favicon.png">
+
+<style>
+    body { 
+        margin: 0; 
+        overflow: hidden; 
+        font-family: 'Poppins', sans-serif; 
+        background-color: #0f172a; 
+    }
+    
+    /* --- TÍTULO SUPERIOR --- */
+    #top-title {
+        position: absolute;
+        top: 25px;
+        width: 100%;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        pointer-events: none;
+        z-index: 10;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    
+    #ui-panel {
+        position: absolute;
+        top: 50%; 
+        right: 30px;
+        transform: translateY(-50%);
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        min-width: 280px;
+    }
+
+    h5 {
+        color: #f8fafc;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .anim-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        cursor: default;
+    }
+
+    .anim-name {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+
+    .key-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-right: 15px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    /* EFECTO NEÓN ACTIVO */
+    .anim-item.active-anim {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(59, 130, 246, 0.15));
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+        transform: translateX(-5px); 
+    }
+
+    .anim-item.active-anim .key-badge {
+        background: #38bdf8;
+        color: #0f172a;
+        border-color: #38bdf8;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+    }
+
+    .anim-item.active-anim .anim-name {
+        color: #38bdf8;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* --- FOOTER DEL PROGRAMADOR (Izquierda Abajo) --- */
+    #dev-footer {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 15px;
+        padding: 15px 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .dev-title {
+        font-size: 0.7rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+    }
+
+    .dev-name {
+        color: #38bdf8;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .dev-school {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin-top: 2px;
+        font-weight: 300;
+    }
+
+    #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 20;
+    }
+</style>
+</head>
+<body>
+
+<div id="loading" class="spinner-border text-info" style="width: 3rem; height: 3rem;" role="status">
+    <span class="visually-hidden">Cargando...</span>
+</div>
+
+<div id="top-title">Modelo 3D</div>
+
+<div id="ui-panel">
+    <h5>Selector de Acción</h5>
+    <ul class="list-unstyled mb-0">
+    <li id="ui-anim-1" class="anim-item"><span class="key-badge">1</span> <span class="anim-name">Mma Kick</span></li>
+    <li id="ui-anim-2" class="anim-item"><span class="key-badge">2</span> <span class="anim-name">Boxing</span></li>
+    <li id="ui-anim-3" class="anim-item"><span class="key-badge">3</span> <span class="anim-name">Flair</span></li>
+    <li id="ui-anim-4" class="anim-item"><span class="key-badge">4</span> <span class="anim-name">Mutant Punch</span></li>
+    <li id="ui-anim-5" class="anim-item mb-0"><span class="key-badge">5</span> <span class="anim-name">Running</span></li>
+    </ul>
+</div>
+
+<div id="dev-footer">
+    <div class="dev-title">Desarrollado por</div>
+    <div class="dev-name">Cristopher Rodríguez Pérez</div>
+    <div class="dev-school">Ingeniería en Sistemas | Instituto Tecnológico de Pachuca</div>
+</div>
+
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+    {
+    "imports": {
+        "three": "./assets/build/three.module.js",
+        "three/addons/": "./assets/jsm/"
+        }
+    }
+</script>
+
+<script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
