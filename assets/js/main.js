@@ -20,7 +20,7 @@ const params = {
   baseModel: "character", 
 };
 
-// Lista de animaciones que descargaste "Without Skin"
+// Lista de animaciones "Without Skin"
 const animations = [
   { key: '1', file: "Mma Kick" },
   { key: '2', file: "Boxing" },
@@ -43,7 +43,7 @@ function init() {
   scene.background = new THREE.Color(0x0f172a); 
   scene.fog = new THREE.Fog(0x0f172a, 200, 1000);
 
-  // Luces ajustadas para un ambiente más dramático
+  // Luces ajustadas
   const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
   hemiLight.position.set(0, 200, 0);
   scene.add(hemiLight);
@@ -57,7 +57,7 @@ function init() {
   dirLight.shadow.camera.right = 120;
   scene.add(dirLight);
 
-  // Piso oscuro para que no deslumbre
+  // Piso oscuro 
   const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(2000, 2000),
     new THREE.MeshPhongMaterial({ color: 0x1e293b, depthWrite: false }),
@@ -101,60 +101,75 @@ function init() {
 }
 
 function loadBaseModelAndAnimations() {
-  loader.load("./assets/models/fbx/" + params.baseModel + ".fbx", function (group) {
-    object = group;
-    
-    object.traverse(function (child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-
-    scene.add(object);
-    mixer = new THREE.AnimationMixer(object);
-
-    let loadedAnimations = 0;
-    
-    animations.forEach((anim) => {
-      loader.load("./assets/models/fbx/" + anim.file + ".fbx", function (animGroup) {
-        const clip = animGroup.animations[0];
-        const action = mixer.clipAction(clip);
-        
-        actions[anim.key] = action;
-        loadedAnimations++;
-
-        // Si ya cargaron todas, iniciamos la primera animación y quitamos el loader
-        if (loadedAnimations === animations.length) {
-          fadeToAction('1', 0.5); // Inicia con Mma Kick
-          
-          const loadingEl = document.getElementById('loading');
-          if(loadingEl) loadingEl.style.display = 'none';
+  // Cargamos el modelo base con contador de porcentaje
+  loader.load(
+    "./assets/models/fbx/" + params.baseModel + ".fbx", 
+    function (group) {
+      object = group;
+      
+      object.traverse(function (child) {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
         }
       });
-    });
-  });
+
+      scene.add(object);
+      mixer = new THREE.AnimationMixer(object);
+
+      let loadedAnimations = 0;
+      
+      animations.forEach((anim) => {
+        loader.load("./assets/models/fbx/" + anim.file + ".fbx", function (animGroup) {
+          const clip = animGroup.animations[0];
+          const action = mixer.clipAction(clip);
+          
+          actions[anim.key] = action;
+          loadedAnimations++;
+
+          // Si ya cargaron todas, iniciamos la animación y quitamos el loader
+          if (loadedAnimations === animations.length) {
+            fadeToAction('1', 0.5); 
+            
+            const loadingEl = document.getElementById('loading');
+            if(loadingEl) loadingEl.style.display = 'none';
+          }
+        });
+      });
+    },
+    // FUNCIÓN DE PROGRESO DE CARGA (Para el modelo pesado)
+    function (xhr) {
+      if (xhr.lengthComputable) {
+        const percentComplete = Math.round((xhr.loaded / xhr.total) * 100);
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) {
+          loadingText.innerText = percentComplete + '%';
+        }
+      }
+    },
+    // Función para manejo de errores
+    function (error) {
+      console.error("Error al cargar el modelo:", error);
+    }
+  );
 }
 
-// --- FUNCIÓN MEJORADA PARA TRANSICIÓN FLUIDA (CrossFade) ---
+// --- FUNCIÓN PARA TRANSICIÓN FLUIDA (CrossFade) ---
 function fadeToAction(key, duration) {
   previousAction = activeAction;
   activeAction = actions[key];
 
   if (previousAction && previousAction !== activeAction) {
-    // 1. Preparamos el nuevo movimiento
     activeAction.reset();
     activeAction.setEffectiveTimeScale(1);
     activeAction.setEffectiveWeight(1);
     
-    // 2. Lo empezamos a reproducir "en el fondo"
     activeAction.play();
     
-    // 3. Mezclamos suavemente el movimiento anterior hacia el nuevo
+    // Cruce suave de movimientos
     previousAction.crossFadeTo(activeAction, duration, true);
     
   } else if (!previousAction) {
-    // Solo para la primera vez que inicia la página
     activeAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).play();
   }
 
@@ -165,7 +180,7 @@ function fadeToAction(key, duration) {
 function onKeyDown(event) {
   const key = event.key;
   if (actions[key] && actions[key] !== activeAction) {
-    // Le damos 0.5 segundos al personaje para acomodarse entre animaciones
+    // 0.5 segundos de transición para hacerlo suave
     fadeToAction(key, 0.5); 
   }
 }
