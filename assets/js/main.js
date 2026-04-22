@@ -103,7 +103,7 @@ function init() {
 function loadBaseModelAndAnimations() {
   // Cargamos el modelo base con contador de porcentaje
   loader.load(
-    "./assets/models/fbx/" + params.baseModel + ".fbx", 
+    "../models/fbx/" + params.baseModel + ".fbx", 
     function (group) {
       object = group;
       
@@ -120,7 +120,7 @@ function loadBaseModelAndAnimations() {
       let loadedAnimations = 0;
       
       animations.forEach((anim) => {
-        loader.load("./assets/models/fbx/" + anim.file + ".fbx", function (animGroup) {
+        loader.load("../models/fbx/" + anim.file + ".fbx", function (animGroup) {
           const clip = animGroup.animations[0];
           const action = mixer.clipAction(clip);
           
